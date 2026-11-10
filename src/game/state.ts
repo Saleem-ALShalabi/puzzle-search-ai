@@ -27,6 +27,24 @@ export class State {
         return head;
     }
 
+    isCompleted(color: number): boolean {
+        return samePosition(this.headOf(color), this.level.endOf(color));
+    }
+
+    isGoal(): boolean {
+        for (const color of this.level.colors) {
+            if (!this.isCompleted(color)) return false;
+        }
+
+        for (const row of this.grid) {
+            for (const cell of row) {
+                if (cell === EMPTY) return false;
+            }
+        }
+
+        return true;
+    }
+
     deepCopy(): State {
         const grid = this.grid.map(row => [...row]);
         const heads = new Map(this.heads);
