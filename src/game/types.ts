@@ -22,3 +22,7 @@ export const DIRECTIONS: Direction[] = ['up', 'down', 'left', 'right'];
 export function samePosition(a: Position, b: Position): boolean {
     return a.row === b.row && a.col === b.col;
 }
+
+export function moveToString(move: Move): string {
+    return `${move.color} ${move.direction}`;
+}

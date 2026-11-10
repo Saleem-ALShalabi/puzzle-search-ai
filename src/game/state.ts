@@ -1,5 +1,14 @@
-import { Level } from "./level";
-import { Cell, EMPTY, Position, samePosition } from "./types";
+import { Level } from './level';
+import {
+    Cell,
+    DIRECTIONS,
+    DIRECTION_DELTAS,
+    EMPTY,
+    Move,
+    Position,
+    moveToString,
+    samePosition,
+} from './types';
 
 export class State {
     readonly level: Level;
@@ -43,6 +52,52 @@ export class State {
         }
 
         return true;
+    }
+
+    private targetOf(move: Move): Position {
+        const head = this.headOf(move.color);
+        const delta = DIRECTION_DELTAS[move.direction];
+        return { row: head.row + delta.row, col: head.col + delta.col };
+    }
+
+    isLegal(move: Move): boolean {
+        const { color } = move;
+
+        if (!this.heads.has(color)) return false;
+        if (this.isCompleted(color)) return false;
+
+        const target = this.targetOf(move);
+        if (!this.level.isInside(target)) return false;
+
+        if (this.grid[target.row][target.col] === EMPTY) return true;
+        return samePosition(target, this.level.endOf(color));
+    }
+
+    getPossibleMoves(): Move[] {
+        const moves: Move[] = [];
+
+        for (const color of this.level.colors) {
+            for (const direction of DIRECTIONS) {
+                const move: Move = { color, direction };
+                if (this.isLegal(move)) moves.push(move);
+            }
+        }
+
+        return moves;
+    }
+
+    applyMove(move: Move): State {
+        if (!this.isLegal(move)) {
+            throw new Error(`Illegal move: ${moveToString(move)}`);
+        }
+
+        const target = this.targetOf(move);
+        const next = this.deepCopy();
+
+        next.grid[target.row][target.col] = move.color;
+        next.heads.set(move.color, target);
+
+        return next;
     }
 
     deepCopy(): State {
