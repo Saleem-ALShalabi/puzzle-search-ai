@@ -12,31 +12,45 @@ function parseChoice(answer: string, count: number): number | undefined {
 
 export async function playLevel(level: Level, rl: readline.Interface): Promise<void> {
     let state = State.initial(level);
-    let moveCount = 0;
+    const history: State[] = [];
 
     console.log(`\n=== ${level.name} ===`);
     console.log('[n] = endpoint, <n> = head of path n, . = empty\n');
 
     while (true) {
         state.print();
-
+        console.log(`Moves made: ${history.length}`);
         if (state.isGoal()) {
-            console.log(`\nSolved in ${moveCount} moves!\n`);
+            console.log(`\nSolved in ${history.length} moves!\n`);
             return;
         }
 
         const moves = state.getPossibleMoves();
         if (moves.length === 0) {
-            console.log('\nDead end: no moves left. Type q to quit.');
+            console.log('\nDead end: no moves left. Type u to undo or r to restart.');
         } else {
             console.log('\nPossible moves:');
             moves.forEach((move, i) => console.log(`  ${i + 1}) ${moveToString(move)}`));
         }
 
-        const answer = (await rl.question('\nYour choice (q to quit): ')).trim().toLowerCase();
+        const answer = (await rl.question('\nYour choice (u = undo, r = restart, q = quit): ')).trim().toLowerCase();
         console.log();
 
         if (answer === 'q') return;
+        if (answer === 'u') {
+            const previous = history.pop();
+            if (previous === undefined) {
+                console.log('Nothing to undo.\n');
+            } else {
+                state = previous;
+            }
+            continue;
+        }
+        if (answer === 'r') {
+            state = State.initial(level);
+            history.length = 0;
+            continue;
+        }
 
         const index = parseChoice(answer, moves.length);
         if (index === undefined) {
@@ -44,8 +58,9 @@ export async function playLevel(level: Level, rl: readline.Interface): Promise<v
             continue;
         }
 
-        state = state.applyMove(moves[index]);
-        moveCount++;
+        const next = state.applyMove(moves[index]);
+        history.push(state);
+        state = next;
     }
 }
 
