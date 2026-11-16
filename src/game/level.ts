@@ -30,14 +30,14 @@ export class Level {
         }
 
         const endpoints = new Map<number, readonly [Position, Position]>();
-        for (const [color, Position] of found) {
-            if (Position.length !== 2) {
-                throw new Error(`Level "${name}": number ${color} appears ${Position.length} times, expected 2.`);
+        for (const [color, positions] of found) {
+            if (positions.length !== 2) {
+                throw new Error(`Level "${name}": number ${color} appears ${positions.length} times, expected 2.`);
             }
-            endpoints.set(color, [Position[0], Position[1]]);
+            endpoints.set(color, [positions[0], positions[1]]);
         }
-        this.endpoints = endpoints;
 
+        this.endpoints = endpoints;
         this.colors = [...endpoints.keys()].sort((a, b) => a - b);
         this.initialGrid = grid.map(row => [...row]);
 

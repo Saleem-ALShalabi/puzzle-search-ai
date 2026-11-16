@@ -40,6 +40,10 @@ export class State {
         return samePosition(this.headOf(color), this.level.endOf(color));
     }
 
+    currentColor(): number | undefined {
+        return this.level.colors.find(color => !this.isCompleted(color));
+    }
+
     isGoal(): boolean {
         for (const color of this.level.colors) {
             if (!this.isCompleted(color)) return false;
@@ -63,8 +67,7 @@ export class State {
     isLegal(move: Move): boolean {
         const { color } = move;
 
-        if (!this.heads.has(color)) return false;
-        if (this.isCompleted(color)) return false;
+        if (color !== this.currentColor()) return false;
 
         const target = this.targetOf(move);
         if (!this.level.isInside(target)) return false;
@@ -74,15 +77,14 @@ export class State {
     }
 
     getPossibleMoves(): Move[] {
+        const color = this.currentColor();
+        if (color === undefined) return [];
+
         const moves: Move[] = [];
-
-        for (const color of this.level.colors) {
-            for (const direction of DIRECTIONS) {
-                const move: Move = { color, direction };
-                if (this.isLegal(move)) moves.push(move);
-            }
+        for (const direction of DIRECTIONS) {
+            const move: Move = { color, direction };
+            if (this.isLegal(move)) moves.push(move);
         }
-
         return moves;
     }
 
@@ -112,7 +114,7 @@ export class State {
         if (cell === EMPTY) return ' . ';
         if (this.level.isEndpoint(pos)) return `[${cell}]`;
         if (samePosition(this.headOf(cell), pos)) return `<${cell}>`;
-        return `${cell}`;
+        return ` ${cell} `;
     }
 
     toString(): string {
@@ -131,7 +133,8 @@ export class State {
             }
             lines.push(line);
         }
-
+        const current = this.currentColor();
+        lines.push(current === undefined ? 'All pairs connected' : `Drawing pair ${current}`);
         return lines.join('\n');
     }
 

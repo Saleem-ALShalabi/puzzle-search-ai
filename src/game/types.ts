@@ -17,7 +17,7 @@ export const DIRECTION_DELTAS: Record<Direction, Position> = {
     right: { row: 0, col: 1 },
 };
 export const EMPTY: Cell = 0;
-export const DIRECTIONS: Direction[] = ['up', 'down', 'left', 'right'];
+export const DIRECTIONS: Direction[] = ['down', 'right', 'up', 'left'];
 
 export function samePosition(a: Position, b: Position): boolean {
     return a.row === b.row && a.col === b.col;
