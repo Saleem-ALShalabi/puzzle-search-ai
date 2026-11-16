@@ -108,6 +108,21 @@ export class State {
         return new State(this.level, grid, heads);
     }
 
+    hash(): string {
+        const gridPart = this.grid.map(row => row.join(',')).join('|');
+        const headsPart = this.level.colors
+            .map(color => {
+                const head = this.headOf(color);
+                return `${head.row},${head.col}`;
+            })
+            .join(';');
+        return `${gridPart}#${headsPart}`;
+    }
+
+    equals(other: State): boolean {
+        return this.hash() === other.hash();
+    }
+
     private cellText(row: number, col: number): string {
         const pos: Position = { row, col };
         const cell = this.grid[row][col];
