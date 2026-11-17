@@ -1,8 +1,11 @@
 import { State } from './game/state';
 import { moveToString } from './game/types';
 import { bfs } from './algorithms/bfs';
+import { dfs } from './algorithms/dfs';
 import { SearchResult, pathOf } from './algorithms/node';
 import { allLevels } from './levels/levels';
+
+const algorithms: ((start: State) => SearchResult)[] = [bfs, dfs];
 
 function printResult(result: SearchResult, ms: number): void {
     console.log(`${result.algorithm} | expanded: ${result.expanded} | time: ${ms.toFixed(2)} ms`);
@@ -25,9 +28,12 @@ for (const level of allLevels) {
     start.print();
     console.log();
 
-    const begin = performance.now();
-    const result = bfs(start);
-    const ms = performance.now() - begin;
+    for (const algorithm of algorithms) {
+        const begin = performance.now();
+        const result = algorithm(start);
+        const ms = performance.now() - begin;
 
-    printResult(result, ms);
+        printResult(result, ms);
+        console.log();
+    }
 }
