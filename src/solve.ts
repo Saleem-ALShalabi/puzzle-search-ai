@@ -4,8 +4,9 @@ import { bfs } from './algorithms/bfs';
 import { dfs } from './algorithms/dfs';
 import { SearchResult, pathOf } from './algorithms/node';
 import { allLevels } from './levels/levels';
+import { ucs } from './algorithms/ucs';
 
-const algorithms: ((start: State) => SearchResult)[] = [bfs, dfs];
+const algorithms: ((start: State) => SearchResult)[] = [bfs, dfs, ucs];
 
 function printResult(result: SearchResult, ms: number): void {
     console.log(`${result.algorithm} | expanded: ${result.expanded} | time: ${ms.toFixed(2)} ms`);
@@ -18,7 +19,8 @@ function printResult(result: SearchResult, ms: number): void {
     const moves = pathOf(result.goal)
         .slice(1)
         .map(node => moveToString(node.move!));
-    console.log(`Solution (${result.goal.g} moves): ${moves.join(', ')}`);
+    console.log(`Solution: ${moves.length} moves, cost ${result.goal.g}`);
+    console.log(`  ${moves.join(', ')}`);
     result.goal.state.print();
 }
 
