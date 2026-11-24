@@ -9,7 +9,6 @@ export function hillClimbing(start: State): SearchResult {
 
     while (true) {
         expanded++;
-
         if (current.state.isGoal()) {
             return { algorithm: 'Hill climbing', goal: current, expanded };
         }
