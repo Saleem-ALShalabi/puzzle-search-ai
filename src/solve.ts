@@ -5,8 +5,9 @@ import { dfs } from './algorithms/dfs';
 import { SearchResult, pathOf } from './algorithms/node';
 import { allLevels } from './levels/levels';
 import { ucs } from './algorithms/ucs';
+import { astar } from './algorithms/astar';
 
-const algorithms: ((start: State) => SearchResult)[] = [bfs, dfs, ucs];
+const algorithms: ((start: State) => SearchResult)[] = [bfs, dfs, ucs, astar];
 
 function printResult(result: SearchResult, ms: number): void {
     console.log(`${result.algorithm} | expanded: ${result.expanded} | time: ${ms.toFixed(2)} ms`);

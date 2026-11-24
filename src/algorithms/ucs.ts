@@ -7,7 +7,7 @@ interface Entry {
     readonly order: number;
 }
 
-function searchKey(node: SearchNode): string {
+export function searchKey(node: SearchNode): string {
     const key = node.state.hash();
     const last = node.move;
     if (last !== null && last.color === node.state.currentColor()) {
