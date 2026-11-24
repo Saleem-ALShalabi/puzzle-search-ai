@@ -3,14 +3,6 @@ import { SearchNode, SearchResult, expand, rootNode } from './node';
 import { PriorityQueue } from './priorityQueue';
 import { searchKey } from './ucs';
 
-/**
- * Manhattan distance still to cover:
- * - the current pair: from its head to its end
- * - pairs not started yet: from their start to their end
- * - completed pairs: 0
- * Each move moves one head by one cell and costs at least 1,
- * so this never overestimates the real cost left (admissible and consistent).
- */
 export function heuristic(state: State): number {
     let h = 0;
     for (const color of state.level.colors) {
@@ -24,8 +16,8 @@ export function heuristic(state: State): number {
 
 interface Entry {
     readonly node: SearchNode;
-    readonly f: number;     // g + h, calculated once when the node is pushed
-    readonly order: number; // when it was added: breaks ties between equal f
+    readonly f: number;     
+    readonly order: number; 
 }
 
 export function astar(start: State): SearchResult {
